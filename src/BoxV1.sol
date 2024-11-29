@@ -7,16 +7,16 @@ import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/Own
 
 //initializer is basically the constructor but called from the proxy
 
-contract BoxV1 is Initializable,UUPSUpgradeable,OwnableUpgradeable {
+contract BoxV1 is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     uint256 internal number;
 
-    ///custom:oz-upgrades-unsafe-allow constructor
-    constructor () {
+     /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
         _disableInitializers();
     }
 
     function initialize() public initializer {
-        __Ownable_init(); //sets owner to: owner = msg.sender
+        __Ownable_init(msg.sender);
         __UUPSUpgradeable_init();
     }
 
@@ -24,9 +24,9 @@ contract BoxV1 is Initializable,UUPSUpgradeable,OwnableUpgradeable {
         return number;
     }
 
-    function version() external view returns (uint256) {
+    function version() external pure returns (uint256) {
         return 1;
     }
 
-    function _authorizeUpgrade(address newImplementation) internal override {}
+    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 }
